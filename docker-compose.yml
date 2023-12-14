@@ -2,7 +2,6 @@ version: "3"
 
 services:
   backend:
-    restart: always
     build:
       context: ./my-store-api
       dockerfile: Dockerfile
@@ -22,7 +21,6 @@ services:
       - ./my-store-api/.env
 
   frontend:
-    restart: always
     build:
       context: ./my-store-front
     ports:
@@ -31,7 +29,6 @@ services:
     container_name: store_front_container
     environment:
       NEXT_PUBLIC_API_ENDPOINT: "http://backend:3030"
-      NEXT_WEBPACK_USEPOLLING: 1
     networks:
       - internal
     depends_on:
