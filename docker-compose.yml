@@ -1,0 +1,47 @@
+version: "3"
+
+services:
+  backend:
+    restart: always
+    build:
+      context: ./my-store-api
+      dockerfile: Dockerfile
+    ports:
+      - "3030:3030"
+    image: store_api_image
+    container_name: store_api_container
+    environment:
+      FRONTEND_URL: "http://localhost:3000"
+      PORT: "3030"
+    networks:
+      - internal
+    volumes:
+      - ./my-store-api:/app
+      - /app/node_modules
+    env_file:
+      - ./my-store-api/.env
+
+  frontend:
+    restart: always
+    build:
+      context: ./my-store-front
+    ports:
+      - "3000:3000"
+    image: store_front_image
+    container_name: store_front_container
+    environment:
+      NEXT_PUBLIC_API_ENDPOINT: "http://backend:3030"
+      NEXT_WEBPACK_USEPOLLING: 1
+    networks:
+      - internal
+    depends_on:
+      - backend
+    volumes:
+      - ./my-store-front:/app
+      - /app/node_modules
+      - /app/.next
+
+networks:
+  internal:
+    name: my-store-internal
+    driver: bridge
