@@ -13,7 +13,7 @@ module.exports = {
       'sans': ['"Work Sans"'],
       'serif': ['"Work Sans"'],
       'mono': ['"Work Sans"'],
-      'display': ['"DM Serif Display"'],
+      'display': ['"DM Serif Display"', '"Work Sans"'],
       'body': ['"Work Sans"'],
     },
     container: {
