@@ -1,6 +1,6 @@
 export async function getProducts(take) {
     try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/api/products?take=${take}`, {
+        const res = await fetch(`${process.env.BACKEND_URL}/api/products?take=${take}`, {
             cache: "no-store",
             headers: {
                 "Content-Type": "application/json",
