@@ -3,12 +3,15 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation'
 import { getProduct } from '@/services/api/product.api.js';
+import ProductsRecommend from "@/components/products/ProductsRecommend";
 import BreadCrumb from "@/components/UI/Breadcrumb";
 import TitlePage from '@/components/UI/TitlePage';
 import ProductFancyBox from "@/components/products/ProductFancyBox";
 import Loader from "@/components/UI/Loader";
 import Alert from "@/components/UI/Alert";
 import { getBase64 } from '../../../lib/base64';
+import { getProducts } from "@/services/api/product.api.js";
+
 
 export default function Page() {
 
@@ -20,6 +23,8 @@ export default function Page() {
     const [slideIndex, setSlideIndex] = useState(0);
     const [showFancyBox, setShowFancyBox] = useState(false);
     const [error, setError] = useState(null);
+    const [products, setProducts] = useState(null);
+
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -56,6 +61,26 @@ export default function Page() {
             fetchPlaceholderImage();
         }
     }, [product]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            setLoading(true);
+            try {
+                let products = await getProducts(3);
+
+                if (products) {
+                    setProducts(products?.data);
+                }
+            }
+            catch (err) {
+                setError(err)
+            }
+            finally {
+                setLoading(false);
+            }
+        }
+        fetchProducts();
+    }, []);
 
     if (loading) return <Loader />;
 
@@ -148,6 +173,18 @@ export default function Page() {
                     <p className="mb-3 font-semibold text-lg">{product?.price} €</p>
                     <p className="leading-7">{product?.description}</p>
                 </div>
+            </div>
+            <div className="flex items-center mt-32 mb-10">
+                <div className="flex-1 flex h-[3px] bg-gray-950	"></div>
+                <h2 className="px-8 text-xl">Recommended products</h2>
+                <div className="flex-1 flex h-[3px] bg-gray-950	"></div>
+            </div>
+            <div className="flex flex-row">
+                {
+                    products.map(product => (
+                    <ProductsRecommend key={product.id} product={product} />
+                    ))
+                }
             </div>
         </div>
     );
