@@ -44,9 +44,13 @@ export default function Page() {
 
     useEffect(() => {
         const fetchPlaceholderImage = async () => {
-            const placeholder = await getBase64(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/${product?.thumbnail}`);
-            setPlaceholderImage(placeholder);
-        }
+            try {
+                const placeholder = await getBase64(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/${product.thumbnail}`);
+                setPlaceholderImage(placeholder);
+            } catch (error) {
+                console.error('Error fetching placeholder image:', error.message);
+            }
+            };
         if (product) {
             setSelectedImage(product?.thumbnail);
             fetchPlaceholderImage();
