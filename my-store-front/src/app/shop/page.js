@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { getProducts } from "@/services/api/product.api.js";
+import { getProducts, getProductsAjax } from "@/services/api/product.api.js";
 import Loader from "@/components/UI/Loader";
 import ProductsGrid from "@/components/products/ProductsGrid";
 import ProductsCounter from "@/components/products/ProductsCounter";
@@ -25,6 +25,7 @@ export default function Page({
             setLoading(true);
             try {
                 let products = await getProducts(take);
+                let productFilter = await getProductsAjax("90","100"); // Remplacer valeur en dur par les valeurs de l'input
 
                 if (products) {
                     setProducts(products?.data);
