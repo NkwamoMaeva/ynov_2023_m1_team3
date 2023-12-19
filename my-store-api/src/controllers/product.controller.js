@@ -27,7 +27,6 @@ exports.getProducts = async (req, res, next) => {
 
 
 exports.getProductsAjax = async (req, res, next) => {
-    console.log(req.query.params)
     try {
         const products = await prisma.product.findMany({
             where: {
