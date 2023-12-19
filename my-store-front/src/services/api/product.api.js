@@ -14,10 +14,13 @@ export async function getProducts(take) {
     }
 }
 
-export async function getProduct(id) {
+export async function getFilteredProducts(min,max) {
     try {
-        const res = await fetch(`${process.env.BACKEND_URL}/api/products/${id}`, {
+        const res = await fetch(`${process.env.BACKEND_URL}/api/products/filters?min=${min}&max=${max}`, {
             cache: "no-store",
+            headers: {
+                "Content-Type": "application/json",
+            },
         });
         const data = await res.json();
         return data;
@@ -27,23 +30,15 @@ export async function getProduct(id) {
     }
 }
 
-
-export async function getProductsAjax(intervalMin, intervalMax ) {
-
+export async function getProduct(id) {
     try {
-
-        const res = await fetch(`${process.env.BACKEND_URL}/api/products/filters?min=${intervalMin}&max=${intervalMax}`, {
+        const res = await fetch(`${process.env.BACKEND_URL}/api/products/${id}`, {
             cache: "no-store",
-            headers: {
-                "Content-Type": "application/json",
-            },
         });
         const data = await res.json();
-         console.log(data)
         return data;
     }
     catch (err) {
-        console.log('error : ' + `${process.env.BACKEND_URL}/api/products/filers?=&min=${intervalMin}&max=${intervalMax}` )
         return err;
     }
 }

@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { getProducts, getProductsAjax } from "@/services/api/product.api.js";
+import { getProducts, getFilteredProducts } from "@/services/api/product.api.js";
 import Loader from "@/components/UI/Loader";
 import ProductsGrid from "@/components/products/ProductsGrid";
 import ProductsCounter from "@/components/products/ProductsCounter";
@@ -15,9 +15,10 @@ import { useState, useEffect } from 'react';
 export default function Page({
     searchParams,
 }) {
+    const [range, setRange] = useState([100, 300]);
     const [anchorEl, setAnchorEl] = useState(null);
-    const [products, setProducts] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [products, setProducts] = useState(null);
     const { take = 8 } = searchParams || {};
 
     useEffect(() => {
@@ -25,7 +26,6 @@ export default function Page({
             setLoading(true);
             try {
                 let products = await getProducts(take);
-                let productFilter = await getProductsAjax("90","100"); // Remplacer valeur en dur par les valeurs de l'input
 
                 if (products) {
                     setProducts(products?.data);
@@ -48,6 +48,47 @@ export default function Page({
     const handleClose = () => {
         setAnchorEl(null);
     };
+    const handleReset = () => {
+        const fetchProduct = async () => {
+            setLoading(true);
+            try {
+                let products = await getProducts(take);
+
+                if (products) {
+                    setProducts(products?.data);
+                }
+            }
+            catch (err) {
+                setError(err)
+            }
+            finally {
+                setLoading(false);
+            }
+        }
+        handleClose();
+        fetchProduct();
+    }
+    const handleSubmit = (min, max) => {
+        const fetchProduct = async () => {
+            setLoading(true);
+            try {
+                let products = await getFilteredProducts(min, max);
+
+                if (products) {
+                    setProducts(products?.data);
+                }
+            }
+            catch (err) {
+                setError(err)
+            }
+            finally {
+                setLoading(false);
+            }
+        }
+        fetchProduct();
+        setRange([min, max])
+        handleClose();
+    };
     const openFilter = Boolean(anchorEl);
     const idFilter = openFilter ? 'simple-popover' : undefined;
 
@@ -68,7 +109,7 @@ if (loading) return <Loader />;
                 horizontal: 'right',
             }}
         >
-            <Filter min={20} max={300} onClose={handleClose} />
+            <Filter min={range[0]} max={range[1]} onReset={handleReset} onSubmit={handleSubmit} />
         </Popover>
             <div className="flex flex-row justify-between">
                 <TitlePage title="Shop" />

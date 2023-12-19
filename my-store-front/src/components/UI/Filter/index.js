@@ -8,7 +8,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Button from '@mui/material/Button';
 import { useState } from 'react';
 
-const Index = ({min, max, onClose}) => {
+const Index = ({min, max, onReset, onSubmit}) => {
     const [range, setRange] = useState([min, max]);
     const minDistance = 10;
     const handleRangeChange = (event, newValue, activeThumb) => {
@@ -29,9 +29,13 @@ const Index = ({min, max, onClose}) => {
         }
     };
 
-    const handleClose = () => {
-        onClose();
-  };
+    const handleReset = () => {
+        onReset();
+    };
+
+    const handleSubmit = () => {
+        onSubmit(range[0], range[1]);
+    };
 
     return (
         <Card sx={{ minWidth: 275 }}>
@@ -77,8 +81,8 @@ const Index = ({min, max, onClose}) => {
                     />
                 </CardContent>
                 <CardActions className="flex justify-end">
-                    <Button size="small" onClick={handleClose}>Cancel</Button>
-                    <Button size="small" onClick={handleClose}>Confirm</Button>
+                    <Button size="small" onClick={handleReset}>Reset</Button>
+                    <Button size="small" onClick={handleSubmit}>Confirm</Button>
                 </CardActions>
             </Card>
     )
