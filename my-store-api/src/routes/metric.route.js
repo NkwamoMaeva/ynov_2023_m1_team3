@@ -5,6 +5,7 @@ const metricController = require('../controllers/metric.controller');
 
 
 router.get('/', metricController.getFilterMetrics);
+router.post('/postValues', metricController.postFilterValues);
 
 
 module.exports = router;

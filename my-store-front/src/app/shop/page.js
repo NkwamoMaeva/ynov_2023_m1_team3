@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { getProducts, getFilteredProducts } from "@/services/api/product.api.js";
-import { getFilterMetrics} from "@/services/api/metric.api.js";
+import { getFilterMetrics, postFilterValues} from "@/services/api/metric.api.js";
 import Loader from "@/components/UI/Loader";
 import ProductsGrid from "@/components/products/ProductsGrid";
 import ProductsCounter from "@/components/products/ProductsCounter";
@@ -57,6 +57,7 @@ export default function Page({
                     setRange([100, 300]);
                     let products = await getProducts(take);
                     let metrics = await getFilterMetrics(); //données du filtre
+                    // let postInputValues = postFilterValues(250,300); // cette ligne appel la fonction d'insert. Faire attention car elle l'appelera a chaque reload
 
                     if (products) {
                         setProducts(products?.data);
