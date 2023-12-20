@@ -14,9 +14,10 @@ export async function getProducts(take) {
     }
 }
 
-export async function getFilteredProducts(min,max) {
+export async function getFilteredProducts(min, max, take=8) {
+    console.log(max)
     try {
-        const res = await fetch(`${process.env.BACKEND_URL}/api/products/filters?min=${min}&max=${max}`, {
+        const res = await fetch(`${process.env.BACKEND_URL}/api/products/filters?min=${min}&max=${max}&take=${take}`, {
             cache: "no-store",
             headers: {
                 "Content-Type": "application/json",
