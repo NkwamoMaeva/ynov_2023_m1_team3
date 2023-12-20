@@ -181,7 +181,7 @@ export default function Page() {
             </div>
             <div className="flex flex-row">
                 {
-                    products.map(product => (
+                    products?.map(product => (
                     <ProductsRecommend key={product.id} product={product} />
                     ))
                 }
