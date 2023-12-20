@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { getProducts, getFilteredProducts } from "@/services/api/product.api.js";
+import { getFilterMetrics} from "@/services/api/metric.api.js";
 import Loader from "@/components/UI/Loader";
 import ProductsGrid from "@/components/products/ProductsGrid";
 import ProductsCounter from "@/components/products/ProductsCounter";
@@ -31,7 +32,7 @@ export default function Page({
             setRange([min, max]);
 
             try {
-                let products = await getFilteredProducts(min, max);
+                let products = await getFilteredProducts(min, max); // produits filtré à partir du prix
 
                 if (products) {
                     setProducts(products?.data);
@@ -55,6 +56,7 @@ export default function Page({
                 try {
                     setRange([100, 300]);
                     let products = await getProducts(take);
+                    let metrics = await getFilterMetrics(); //données du filtre
 
                     if (products) {
                         setProducts(products?.data);

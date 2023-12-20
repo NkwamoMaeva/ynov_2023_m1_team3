@@ -16,3 +16,10 @@ model Product {
   packshot    String @default("/uploads/")
   price       Decimal @default(0.00)
 }
+
+model FilterMetrics {
+  id          Int     @id @default(autoincrement())
+  min         Decimal
+  max         Decimal
+  interval    String
+}
