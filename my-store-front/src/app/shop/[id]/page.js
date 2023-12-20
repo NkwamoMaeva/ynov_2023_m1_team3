@@ -10,6 +10,7 @@ import ProductFancyBox from "@/components/products/ProductFancyBox";
 import Loader from "@/components/UI/Loader";
 import Alert from "@/components/UI/Alert";
 import { getBase64 } from '../../../lib/base64';
+import './FormulairePopin.css'; 
 
 
 export default function Page() {
@@ -23,6 +24,26 @@ export default function Page() {
     const [showFancyBox, setShowFancyBox] = useState(false);
     const [error, setError] = useState(null);
     const [products, setProducts] = useState(null);
+
+    const [isFormOpen, setIsFormOpen] = useState(false);
+    const [formData, setFormData] = useState({
+        nom:"",
+        prenom:"",
+        email:"",
+    });
+
+        const handleInterestedClick = async () => {
+        console.log("Je suis intéressé !");
+        openForm();
+    };
+
+    const openForm = () => {
+        setIsFormOpen(true);
+    };
+
+    const closeForm = () => {
+        setIsFormOpen(false);
+    };
 
 
     useEffect(() => {
@@ -45,6 +66,48 @@ export default function Page() {
             fetchProduct();
         }
     }, [id]);
+
+        const handleSubmit = async () => {
+        try {
+            const email = formData.email;
+            const prenom = formData.prenom;
+            const nom = formData.nom;
+            const mail = {
+                "to": email,
+                "subject": "Merci de votre intérêt !",
+                "text": `Bonjour ${prenom}, merci d'être intéressé par notre article : ${product.name}`
+            };
+            console.log('Envoi du formulaire en cours...', formData);
+            // Envoi des données du formulaire à l'API
+            const response = await fetch(`${process.env.BACKEND_URL}/api/send-email`, {
+                method: 'POST',
+                Origin: `${process.env.BACKEND_URL}`,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(mail),
+            });
+
+            if (response.ok) {
+                console.log('E-mail envoyé avec succès!');
+            } else {
+                console.error('Erreur lors de l\'envoi de l\'e-mail caramba- Statut:', response.status);
+                const errorText = await response.text();
+                console.error('Message d\'erreur:', errorText);
+            }
+        } catch (error) {
+            console.error('Erreur lors de l\'envoi de l\'e-mail', error);
+        }
+
+        console.log("Formulaire soumis avec succès :", formData);
+        setFormData({
+            nom: "",
+            prenom: "",
+            email: "",
+        });
+        closeForm();
+    };
+
 
     useEffect(() => {
         const fetchPlaceholderImage = async () => {
@@ -95,6 +158,41 @@ export default function Page() {
         setSelectedImage(slideIndex === 0 ? product?.packshot : product?.thumbnail);
         setSlideIndex(slideIndex === 0 ? 1 : 0);
     }
+
+        const FormulairePopin = (
+        <div className="popin">
+            <form>
+                <label>Nom:</label>
+                <input
+                    type="text"
+                    value={formData.nom}
+                    onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
+                />
+
+                <label>Prénom:</label>
+                <input
+                    type="text"
+                    value={formData.prenom}
+                    onChange={(e) => setFormData({ ...formData, prenom: e.target.value })}
+                />
+
+                <label>Email:</label>
+                <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                />
+
+                <button type="button" onClick={handleSubmit}>
+                    Valider
+                </button>
+            </form>
+
+            <button className="close-button" onClick={closeForm}>
+                <span>&times;</span>
+            </button>
+        </div>
+    );
 
     return (
         <div className="container mx-auto py-12">
@@ -174,6 +272,19 @@ export default function Page() {
                     <TitlePage title={product?.name} />
                     <p className="mb-3 font-semibold text-lg">{product?.price} €</p>
                     <p className="leading-7">{product?.description}</p>
+
+                    <button
+                        className="bg-blue-500 text-white py-2 px-4 mt-4 rounded cursor-pointer"
+                        onClick={() => {
+                            handleInterestedClick();
+                            openForm();
+                        }}
+                    >
+                        Je suis intéressé
+                    </button>
+
+                    {isFormOpen && FormulairePopin} 
+
                 </div>
             </div>
             {
