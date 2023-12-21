@@ -85,7 +85,8 @@ const processImagesInDirectory = (directoryPath) => {
     } else {
       files.forEach((file) => {
         const localImagePath = path.join(directoryPath, file);
-        const s3Key = file; // La logique de nommage
+        const fileNameWithoutExtension = path.parse(file).name; // La logique de nommage
+        const s3Key = `${fileNameWithoutExtension}.webp`;
 
         // Appelle optimizeAndUploadImage avec une fonction de callback pour stocker l'URL
         optimizeAndUploadImage(localImagePath, s3Key, (imageUrl) => {
