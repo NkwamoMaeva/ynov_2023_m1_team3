@@ -15,14 +15,12 @@ function mostFrequentInterval(dataArray, dataArrayLength) {
         }
     }
 
-    // console.log(mostOccurencies)
     return mostOccurencies;
 }
 
-function generateAverages (response){ //géneration des moyennes à partir de la reponse de la reqûete get
+export function generateAverages (response){ //géneration des moyennes à partir de la reponse de la reqûete get
 
     const data = response.data;
-    // console.log(data)
 
     let averages  = { // objet qui stockera les valeurs finales
         min : null,
@@ -37,7 +35,6 @@ function generateAverages (response){ //géneration des moyennes à partir de la
 
         minValuesArray.push(elem.min)
     });
-    // console.log(minValuesArray)
 
     data.forEach(elem => {
         maxValuesArray.push(elem.max)
@@ -52,13 +49,8 @@ function generateAverages (response){ //géneration des moyennes à partir de la
     averages.max =  Math.ceil((maxValuesArray.reduce((acc,currentVal)=>{ return  parseInt(acc) + parseInt(currentVal)}) / maxValuesArray.length ))
     averages.interval = `${mostFrequentInterval(intervalsArray, intervalsArray.length)}`;
 
-    console.log(averages);
     return averages;
 }
-
-
-
-
 
 export async function getFilterMetrics() {
     try {
@@ -69,7 +61,6 @@ export async function getFilterMetrics() {
             },
         });
         const data = await res.json();
-        console.log(data)
         generateAverages(data) // cette fonction retoune un object qui contiendra les moyennes
         return data;
     }
@@ -89,7 +80,6 @@ export async function postFilterValues(min, max) {
             },
         });
         const data = await res.json();
-        console.log(data)
         return data;
     }
     catch (err) {

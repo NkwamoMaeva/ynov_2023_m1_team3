@@ -35,6 +35,7 @@ services:
     volumes:
       - ./my-store-api-mail:/app
       - /app/node_modules
+      - /app/prisma
 
   frontend:
     build:
