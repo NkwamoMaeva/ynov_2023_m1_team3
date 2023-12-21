@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation'
 import { getProduct, getFilteredProducts } from '@/services/api/product.api.js';
+import { getFilterMetrics, generateAverages} from "@/services/api/metric.api.js";
 import { sendEmail } from '@/services/api/mailing.api';
 import ProductsRecommend from "@/components/products/ProductsRecommend";
 import BreadCrumb from "@/components/UI/Breadcrumb";
@@ -119,11 +120,23 @@ export default function Page() {
             try {
                 const min = localStorage.getItem('filterMin');
                 const max = localStorage.getItem('filterMax');
-                if(min && max){
+                if (min && max) {
                     let products = await getFilteredProducts(min, max, 3);
                     if (products) {
-                    setProducts(products?.data);
-                }
+                        setProducts(products?.data);
+                    }
+                } else {
+                    let metrics = await getFilterMetrics(); //données du filtre
+                    
+                    if(metrics){
+                        let averages = await generateAverages(metrics)
+                         if(averages){
+                            let products = await getFilteredProducts(averages.min, averages.max, 3);
+                            if (products) {
+                                setProducts(products?.data);
+                            }
+                         }
+                    }
                 }
             }
             catch (err) {
@@ -286,7 +299,7 @@ export default function Page() {
                         </div>
                         <div className="flex flex-row">
                             {
-                                products?.map(product => (
+                                products.map(product => (
                                 <ProductsRecommend key={product.id} product={product} />
                                 ))
                             }

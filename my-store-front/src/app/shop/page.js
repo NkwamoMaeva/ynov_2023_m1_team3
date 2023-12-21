@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { getProducts, getFilteredProducts } from "@/services/api/product.api.js";
-import { getFilterMetrics, postFilterValues} from "@/services/api/metric.api.js";
+import { getFilterMetrics, postFilterValues, generateAverages} from "@/services/api/metric.api.js";
 import Loader from "@/components/UI/Loader";
 import ProductsGrid from "@/components/products/ProductsGrid";
 import ProductsCounter from "@/components/products/ProductsCounter";
@@ -48,7 +48,6 @@ export default function Page({
                 setLoading(false);
             }
         }
-        console.log(query.get('min'))
         fetchProducts(query.get('min'), query.get('max'));
         } else {
             const fetchProducts = async () => {
@@ -57,7 +56,15 @@ export default function Page({
                     setRange([100, 300]);
                     let products = await getProducts(take);
                     let metrics = await getFilterMetrics(); //données du filtre
-                    // let postInputValues = postFilterValues(250,300); // cette ligne appel la fonction d'insert. Faire attention car elle l'appelera a chaque reload
+                    
+                    if(metrics){
+                        let averages = await generateAverages(metrics)
+                         if(averages){
+                            const interval = averages.interval.split(':').map(part => part.trim());
+                            const range = interval.map(Number);
+                            setRange(range);
+                         }
+                    }
 
                     if (products) {
                         setProducts(products?.data);
@@ -105,6 +112,7 @@ export default function Page({
         const fetchProduct = async () => {
             setLoading(true);
             try {
+                postFilterValues(min,max);
                 handleClose();
                 router.push(`?min=${min}&max=${max}`, undefined, { shallow: true })
             }
