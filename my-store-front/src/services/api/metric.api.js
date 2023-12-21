@@ -1,14 +1,37 @@
+function mostFrequentInterval(dataArray, dataArrayLength) {
+
+    let maxCount = 0; // counter d'apparition d'un interval dans le tableau
+    let mostOccurencies; // nombre d'apparition max d'un élement du tableau
+    for (let i = 0; i < dataArrayLength; i++) {
+        let count = 0;
+        for (let j = 0; j < dataArrayLength; j++) {
+            if (dataArray[i] == dataArray[j])
+                count++;
+        }
+
+        if (count > maxCount) {
+            maxCount = count;
+            mostOccurencies = dataArray[i];
+        }
+    }
+
+    // console.log(mostOccurencies)
+    return mostOccurencies;
+}
+
 function generateAverages (response){ //géneration des moyennes à partir de la reponse de la reqûete get
 
-    let data = response.data;
+    const data = response.data;
     // console.log(data)
 
     let averages  = { // objet qui stockera les valeurs finales
         min : null,
-        max : null
+        max : null,
+        interval : null
     }
     let minValuesArray = [] //toutes les valeurs minimum
     let maxValuesArray = [] //toutes les valeurs maximum
+    let intervalsArray = [] //toutes les valeurs interval
 
     data.forEach(elem => {
 
@@ -20,14 +43,21 @@ function generateAverages (response){ //géneration des moyennes à partir de la
         maxValuesArray.push(elem.max)
     });
 
-    // console.log(maxValuesArray)
+    data.forEach(elem => {
+
+        intervalsArray.push(elem.interval)
+    });
 
     averages.min =  Math.ceil((minValuesArray.reduce((acc,currentVal)=>{ return  parseInt(acc) + parseInt(currentVal)}) / minValuesArray.length ))
     averages.max =  Math.ceil((maxValuesArray.reduce((acc,currentVal)=>{ return  parseInt(acc) + parseInt(currentVal)}) / maxValuesArray.length ))
+    averages.interval = `${mostFrequentInterval(intervalsArray, intervalsArray.length)}`;
 
     console.log(averages);
     return averages;
 }
+
+
+
 
 
 export async function getFilterMetrics() {
@@ -39,6 +69,7 @@ export async function getFilterMetrics() {
             },
         });
         const data = await res.json();
+        console.log(data)
         generateAverages(data) // cette fonction retoune un object qui contiendra les moyennes
         return data;
     }
