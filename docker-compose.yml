@@ -2,6 +2,7 @@ version: "3"
 
 services:
   backend:
+    restart: unless-stopped
     build:
       context: ./my-store-api
       dockerfile: Dockerfile
@@ -17,8 +18,23 @@ services:
     volumes:
       - ./my-store-api:/app
       - /app/node_modules
-    env_file:
-      - ./my-store-api/.env
+
+  backend-mail:
+    restart: unless-stopped
+    build:
+      context: ./my-store-api-mail
+      dockerfile: Dockerfile
+    ports:
+      - "3031:3031"
+    image: store_api_mail_image
+    container_name: store_api_mail_container
+    environment:
+      ADMIN_MAIL: mystoreio368@gmail.com
+    networks:
+      - internal
+    volumes:
+      - ./my-store-api-mail:/app
+      - /app/node_modules
 
   frontend:
     build:
@@ -34,6 +50,7 @@ services:
       - internal
     depends_on:
       - backend
+      - backend-mail
     volumes:
       - ./my-store-front:/app
       - /app/node_modules
