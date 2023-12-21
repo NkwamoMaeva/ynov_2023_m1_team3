@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     env: {
-        BACKEND_URL: "http://127.0.0.1:3030", // pulls from .env file
+        BACKEND_URL: "http://127.0.0.1:3030",
+        BACKEND_NESTJS_URL: "http://127.0.0.1:3031",
     },
     images: {
         formats: ['image/webp'],

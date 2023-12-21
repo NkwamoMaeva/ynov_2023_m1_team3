@@ -39,11 +39,11 @@ button {
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s ease; 
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
-    background-color: #28f8ff; 
+    background-color: #095ab0;
 }
 
 .close-button {
@@ -58,9 +58,12 @@ button:hover {
 }
 
 .close-button:hover {
-    background: none; 
+    background: none;
 }
 
-button, [type='button'], [type='reset'], [type='submit']{
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
     background-color: #007bff;
 }

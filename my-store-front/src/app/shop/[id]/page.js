@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation'
 import { getProduct, getFilteredProducts } from '@/services/api/product.api.js';
+import { sendEmail } from '@/services/api/mailing.api';
 import ProductsRecommend from "@/components/products/ProductsRecommend";
 import BreadCrumb from "@/components/UI/Breadcrumb";
 import TitlePage from '@/components/UI/TitlePage';
@@ -10,7 +11,7 @@ import ProductFancyBox from "@/components/products/ProductFancyBox";
 import Loader from "@/components/UI/Loader";
 import Alert from "@/components/UI/Alert";
 import { getBase64 } from '../../../lib/base64';
-import './FormulairePopin.css'; 
+import './FormulairePopin.css';
 
 
 export default function Page() {
@@ -68,43 +69,31 @@ export default function Page() {
     }, [id]);
 
         const handleSubmit = async () => {
-        try {
             const email = formData.email;
             const prenom = formData.prenom;
             const nom = formData.nom;
             const mail = {
-                "to": email,
-                "subject": "Merci de votre intérêt !",
-                "text": `Bonjour ${prenom}, merci d'être intéressé par notre article : ${product.name}`
+                "subject": "Nouvelle personne intéressée",
+                "text": `${prenom} ${nom} est intéressé par notre article : ${product.name}, vous pouvez lui répondre sur ${email}`
             };
-            console.log('Envoi du formulaire en cours...', formData);
-            // Envoi des données du formulaire à l'API
-            const response = await fetch(`${process.env.BACKEND_URL}/api/send-email`, {
-                method: 'POST',
-                Origin: `${process.env.BACKEND_URL}`,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(mail),
-            });
-
-            if (response.ok) {
-                console.log('E-mail envoyé avec succès!');
-            } else {
-                console.error('Erreur lors de l\'envoi de l\'e-mail caramba- Statut:', response.status);
-                const errorText = await response.text();
-                console.error('Message d\'erreur:', errorText);
+            const newClient = async () => {
+                try {
+                    await sendEmail(mail);
+                }
+                catch (err) {
+                    setError(err)
+                }
+                finally {
+                    console.log("Formulaire soumis avec succès :", formData);
+                    setFormData({
+                        nom: "",
+                        prenom: "",
+                        email: "",
+                    });
+                }
             }
-        } catch (error) {
-            console.error('Erreur lors de l\'envoi de l\'e-mail', error);
-        }
+            newClient()
 
-        console.log("Formulaire soumis avec succès :", formData);
-        setFormData({
-            nom: "",
-            prenom: "",
-            email: "",
-        });
         closeForm();
     };
 
